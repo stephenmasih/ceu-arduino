@@ -1,0 +1,31 @@
+#define CEU_ADC_IRQ_N _ADC_vect
+native/const _ADC_vect;
+
+#include "../adc.ceu"
+
+native/pre do
+    void ceu_adc_init (void) {
+        ADCSRA |= B00000000;
+		}
+
+    void ceu_adc (bool v) {
+		ADCSRA |= B10000000;// Enabling the ADC
+    }
+
+    void ceu_adc_request (int pin) {
+        /*
+		ADMUX &= B11011111;
+		ADMUX |= B01000000;
+		ADMUX &= B11110000;
+		ADMUX |= B00000000;//A0 
+		*/
+		ADMUX = 0x40 | ((pin-A0) & 0x07);
+		
+		ADCSRA |= B00001000;
+		ADCSRA |=B01000000;
+    }
+
+    u16 ceu_adc_done (void) {
+        return ADC;
+    }
+end
