@@ -1,0 +1,29 @@
+#include "out.ceu"
+#include "wclock.ceu"
+#include "usart.ceu"
+#include "adc.ceu"
+#include "string.ceu"
+
+
+output high/low OUT_13;
+var int value = _;
+
+spawn Adc();
+
+spawn USART_Init(9600);
+
+loop do 
+
+    value = await Adc_Conversion(_A2);    
+    var[10] byte str = [];
+    call String_Append_INT(&str, value, _);
+	call String_Append_STR(&str, "\n");
+    await USART_Tx(&str);
+    if value < 250 then   //If light intensity is less than analog read of 250
+        emit OUT_13(high); //Turning on the streetlight
+    else
+        emit OUT_13(low); //Turning the streetlight off
+    end
+
+    await 1s;
+end
