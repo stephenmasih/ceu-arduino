@@ -1,0 +1,43 @@
+#include "usart.ceu"
+#include "out.ceu"
+#include "wclock.ceu"
+#include "string.ceu"
+
+native/pre do
+    ##include "Wire.h"
+end
+
+native _Wire;
+
+spawn USART_Init(9600);
+
+_Wire.begin();
+
+code/await Read_Sensor (none) -> int
+do
+    var int value = _;
+    {
+        Wire.beginTransmission(0x23);
+        Wire.write(0x10);
+        Wire.endTransmission();
+    }
+    await 120ms;
+    {   
+        Wire.requestFrom(0x23, 2);
+        for (@value = 0; Wire.available() >= 1; ) {
+            char c = Wire.read();
+            @value = (@value << 8) + (c & 0xFF);
+        }
+        @value = @value / 1.2;
+    }
+    escape value;
+end
+
+loop do
+	var int value = await Read_Sensor();
+	var[10] byte str = [];
+	call String_Append_INT(&str, value, _);
+	call String_Append_STR(&str, "\n");
+    await USART_Tx(&str);
+	await 1s;
+end
