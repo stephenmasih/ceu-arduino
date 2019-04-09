@@ -12,15 +12,16 @@
 Ceu-Arduino was succesfully set-up in an fresh Ubuntu 18.04 LTS VM and the examples were tested and run on an Arduino Uno development board.
 
 ### [](https://github.com/stephenmasih/ceu-arduino/tree/master/ceu-samples/README.md#task-2--create-a-ceu-arduino-example-using-any-sensor-or-actuator)Task 2 : Create a Ceu-Arduino Example using any Sensor or Actuator
-
-[![LDR_STREETIGHTS](https://drive.google.com/file/d/1C0ZwifY63PwcmhvghbxHEniFwCoztFy4/view?usp=sharing)](https://drive.google.com/file/d/1C0ZwifY63PwcmhvghbxHEniFwCoztFy4/view?usp=sharing)
+[![](
+https://drive.google.com/uc?export=view&id=1C0ZwifY63PwcmhvghbxHEniFwCoztFy4)](
+https://drive.google.com/uc?export=view&id=1C0ZwifY63PwcmhvghbxHEniFwCoztFy4)
 
 Interrupt driven Analog read is made on a LDR (Light Dependent Resistor) that senses the voltage across the voltage divider based on the amount of light intensity on it. If, the luminosity levels are too low, the digital pin 13 is set HIGH. The pin is thus connected to both the Built-in LED and an external RED-Led. 
 The analog reads is also transmitted via. USART @9600 baud. 
 
 ### [](#task-3--create-a-simple-example-in-c-that-uses-interrupt-driven-analog-reads)Task 3 : Create a simple example in C and Ceu-Arduino that uses interrupt-driven analog reads
 
-[![potentiometer_adc_interrupts](https://drive.google.com/file/d/11CPetLfrAFcsmsWZ41XJJvzz62xxVusR/view?usp=sharing)](https://drive.google.com/file/d/11CPetLfrAFcsmsWZ41XJJvzz62xxVusR/view?usp=sharing)
+[![](https://drive.google.com/uc?export=view&id=11CPetLfrAFcsmsWZ41XJJvzz62xxVusR)](https://drive.google.com/uc?export=view&id=11CPetLfrAFcsmsWZ41XJJvzz62xxVusR)
 
 ADC interrupts by configuring ADMUX register to a reference voltage and to take input from A0 pin.
 Setting up the ADCSRA register to enable auto-triggering, setting up the pre-scalar, and enabling interrupts in ADC. We kickstart the conversion by setting the ADSC bit.
@@ -36,7 +37,7 @@ The prerequisites file and more implementation on ceu-arduino have been uploaded
 
 ## Adding a BH1750 sensor: Library built on top of another driver (wire.h) 
 
-[![I2C Peripheral BH1750](https://drive.google.com/file/d/1wJRpYa6rNyucCeeFfRyZ7K52qLkUG7gW/view?usp=sharing)](https://drive.google.com/file/d/1wJRpYa6rNyucCeeFfRyZ7K52qLkUG7gW/view?usp=sharing)
+[![](https://drive.google.com/uc?export=view&id=1wJRpYa6rNyucCeeFfRyZ7K52qLkUG7gW)](https://drive.google.com/uc?export=view&id=1wJRpYa6rNyucCeeFfRyZ7K52qLkUG7gW)
 
 The code to the implementation is in [ceu-arduino/ceu-samples/BH1750_I2C_01.ceu](https://github.com/stephenmasih/ceu-arduino/blob/master/ceu-samples/BH1750_I2C_01.ceu)
 
