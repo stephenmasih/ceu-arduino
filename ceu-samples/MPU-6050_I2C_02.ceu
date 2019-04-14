@@ -1,0 +1,79 @@
+#include "usart.ceu"
+#include "out.ceu"
+#include "wclock.ceu"
+#include "string.ceu"
+
+native/pre do
+    ##include "Wire.h"
+end
+
+native _Wire;
+
+
+spawn USART_Init(9600);
+
+_Wire.begin();
+
+code/call Initialize_MPU6050 (none) -> none
+do
+    {
+		Wire.beginTransmission(0x68);
+		Wire.write(0x6B);
+		Wire.write(0);
+		Wire.endTransmission(1);
+	}
+end
+
+code/await ReadSensor_Transmit_USART(none) -> none 
+do
+	var int acc_x=0;
+	var int acc_y=0;
+	var int acc_z=0;
+	var int temp=0;
+	var int gy_x=0;
+	var int gy_y=0;
+	var int gy_z=0;
+	var[100] byte str = [];
+	{
+		Wire.beginTransmission(0x68);
+		Wire.write(0x3B); // starting with register 0x3B (ACCEL_XOUT_H)
+		Wire.endTransmission(0);
+		Wire.requestFrom(0x68, 14, 1); // request a total of 7*2=14 registers
+		@acc_x=Wire.read()<<8 | Wire.read();// reading registers: 0x3B (ACCEL_XOUT_H) and 0x3C (ACCEL_XOUT_L)
+		@acc_y=Wire.read()<<8 | Wire.read();// reading registers: 0x3D (ACCEL_YOUT_H) and 0x3E (ACCEL_YOUT_L)
+		@acc_z=Wire.read()<<8 | Wire.read();// reading registers: 0x3F (ACCEL_ZOUT_H) and 0x40 (ACCEL_ZOUT_L)
+		@temp=Wire.read()<<8 | Wire.read();// reading registers: 0x41 (TEMP_OUT_H) and 0x42 (TEMP_OUT_L)
+		@gy_x=Wire.read()<<8 | Wire.read();// reading registers: 0x43 (GYRO_XOUT_H) and 0x44 (GYRO_XOUT_L)
+		@gy_y=Wire.read()<<8 | Wire.read();// reading registers: 0x45 (GYRO_YOUT_H) and 0x46 (GYRO_YOUT_L)
+		@gy_z=Wire.read()<<8 | Wire.read();// reading registers: 0x47 (GYRO_ZOUT_H) and 0x48 (GYRO_ZOUT_L)
+	}
+	//string formatting all the axes data (X,Y,Z) of both accelerometer and gyroscope together with an internal TEMPERATURE SENSOR DATA
+		call String_Append_STR(&str, "A_X=");
+		call String_Append_INT(&str, acc_x, _);
+		call String_Append_STR(&str, " A_Y=");
+		call String_Append_INT(&str, acc_y, _);
+		call String_Append_STR(&str, " A_Z=");
+		call String_Append_INT(&str, acc_z, _);
+		call String_Append_STR(&str, " TEMP=");
+		// the following equation was taken from the documentation MPU-6000/MPU-6050 Register Map description
+		temp=temp/340+37;
+		call String_Append_INT(&str, temp, _);
+		call String_Append_STR(&str, " G_X=");
+		call String_Append_INT(&str, gy_x, _);
+		call String_Append_STR(&str, " G_Y=");
+		call String_Append_INT(&str, gy_y, _);
+		call String_Append_STR(&str, " G_Z=");
+		call String_Append_INT(&str, gy_z, _);
+		
+	call String_Append_STR(&str, "\n");
+	await USART_Tx(&str);
+	
+end
+
+call Initialize_MPU6050();
+await 120ms;
+
+loop do     
+	await ReadSensor_Transmit_USART();
+	await 1s;
+end
